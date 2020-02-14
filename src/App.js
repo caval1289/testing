@@ -1,26 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import ShowOtherAdviceButton from "./ShowOtherAdviceButton";
+
+class App extends React.Component {
+  state = {
+    advice: '',
+  };
+
+  loadAdvice = async () => {
+    const response = await fetch('https://api.adviceslip.com/advice');
+    const {
+      slip: { advice },
+    } = await response.json();
+    this.setState({ advice });
+  };
+
+  async componentDidMount() {
+    await this.loadAdvice();
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <p className="Advice">{this.state.advice || '…'}</p>
+        <ShowOtherAdviceButton onClick={this.loadAdvice}/>
+      </div>
+    );
+  }
 }
 
 export default App;
